@@ -1,0 +1,541 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EJ Cuts — Light</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Outfit:wght@200;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:      #f8f8f8;
+    --off-ink:  #efefef;
+    --graphite: #d8d8d8;
+    --silver:   #666666;
+    --ash:      #444444;
+    --white:    #0c0c0c;
+    --blue:     #1d4ed8;
+    --blue-hi:  #2563eb;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #f8f8f8;
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #f8f8f8; }
+  ::-webkit-scrollbar-thumb { background: #ccc; }
+
+  /* â”€â”€ NAV â”€â”€ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    transition: background 0.4s ease, border-color 0.4s ease;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(248,248,248,0.97);
+    border-bottom-color: #e0e0e0;
+  }
+  .nav-logo img { height: 68px; width: auto; filter: none; }
+  .nav-links { display: flex; align-items: center; gap: 40px; }
+  .nav-links a {
+    font-size: 10px; letter-spacing: 0.45em; text-transform: uppercase;
+    color: var(--silver); text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-book {
+    background: var(--blue) !important;
+    color: var(--white) !important;
+    padding: 11px 26px;
+    font-weight: 600 !important;
+    letter-spacing: 0.35em !important;
+    transition: background 0.2s ease, transform 0.15s ease !important;
+    box-shadow: 0 4px 20px rgba(29,78,216,0.35);
+  }
+  .nav-book:hover {
+    background: var(--blue-hi) !important;
+    transform: translateY(-1px);
+  }
+
+  /* â”€â”€ HERO â”€â”€ */
+  .hero {
+    height: 100svh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background: #f8f8f8;
+  }
+  .hero-content {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1; text-align: center;
+  }
+  .hero-logo {
+    width: clamp(240px, 30vw, 420px);
+    filter: none;
+    animation: fade-up 1.1s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 0.1em;
+    color: var(--ash);
+    margin-top: 36px;
+    animation: fade-up 1.1s 0.14s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero-sub {
+    margin-top: 20px;
+    font-size: 12px; letter-spacing: 0.5em; text-transform: uppercase;
+    color: #aaa;
+    animation: fade-up 1.1s 0.24s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero-scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    animation: fade-up 1.1s 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero-scroll-hint span { font-size: 9px; letter-spacing: 0.45em; text-transform: uppercase; color: #bbb; }
+  .scroll-line {
+    width: 1px; height: 44px;
+    background: linear-gradient(to bottom, #444, transparent);
+    animation: scroll-pulse 1.8s ease infinite;
+  }
+  @keyframes scroll-pulse {
+    0%   { transform: scaleY(0); transform-origin: top; }
+    50%  { transform: scaleY(1); transform-origin: top; }
+    51%  { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* â”€â”€ POLE DIVIDER â”€â”€ */
+  .pole-divider {
+    width: 100%; height: 5px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--blue) 0, var(--blue) 18px,
+      var(--white) 18px, var(--white) 36px,
+      var(--ink) 36px, var(--ink) 54px
+    );
+    opacity: 0.45;
+  }
+
+  /* â”€â”€ SHOT ROWS â”€â”€ */
+  .shots-section { background: #f8f8f8; }
+
+  .shot-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 58vh;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: stretch;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .shot-row.revealed { opacity: 1; }
+
+  .shot-row:nth-child(odd)  .shot-img-wrap { order: 2; }
+  .shot-row:nth-child(odd)  .shot-text     { order: 1; }
+  .shot-row:nth-child(even) .shot-img-wrap { order: 1; }
+  .shot-row:nth-child(even) .shot-text     { order: 2; }
+
+  /* Full-bleed image â€” fills entire cell */
+  .shot-img-wrap {
+    position: relative;
+    overflow: hidden;
+    min-height: 58vh;
+  }
+  .shot-img-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+  }
+
+  .shot-text {
+    padding: 40px 56px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: #f8f8f8;
+  }
+  .shot-label {
+    font-size: 9px; letter-spacing: 0.5em; text-transform: uppercase;
+    color: var(--silver); margin-bottom: 14px;
+  }
+  .shot-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 3.8vw, 52px); line-height: 0.95;
+    letter-spacing: 0.04em; color: var(--white);
+  }
+  .shot-rule {
+    width: 32px; height: 1px; background: var(--blue);
+    margin: 20px 0;
+  }
+  .shot-desc {
+    font-size: 13px; line-height: 1.85; color: var(--silver);
+    max-width: 260px;
+  }
+
+  /* â”€â”€ BOOK NOW â€” full-area button â”€â”€ */
+  .book-section {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .book-section.revealed { opacity: 1; }
+  .book-full-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 72px 48px;
+    background: var(--blue);
+    text-decoration: none;
+    transition: background 0.2s ease, padding 0.2s ease;
+    cursor: pointer;
+  }
+  .book-full-btn:hover {
+    background: var(--blue-hi);
+    padding-top: 76px;
+    padding-bottom: 76px;
+  }
+  .book-full-btn:active { background: #1a3fbb; }
+  .book-full-btn:focus-visible { outline: 3px solid var(--white); outline-offset: -3px; }
+  .book-btn-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 9vw, 120px);
+    letter-spacing: 0.08em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  /* â”€â”€ INFO STRIP â”€â”€ */
+  .info-strip {
+    display: grid; grid-template-columns: 1fr 1px 1fr;
+    border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;
+    background: var(--off-ink);
+  }
+  .info-block { padding: 56px 64px; display: flex; flex-direction: column; gap: 10px; }
+  .info-divider { background: #e0e0e0; }
+  .info-label { font-size: 9px; letter-spacing: 0.45em; text-transform: uppercase; color: var(--silver); }
+  .info-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 3.2vw, 42px); color: var(--white);
+    letter-spacing: 0.04em; line-height: 1.1;
+  }
+  .info-sub { font-size: 12px; color: var(--silver); line-height: 1.75; margin-top: 4px; }
+
+  /* â”€â”€ HOURS â”€â”€ */
+  .hours-section { background: var(--ink); padding: 96px 0; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 0 52px; }
+  .s-label { font-size: 9px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--silver); margin-bottom: 12px; }
+  .s-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 68px);
+    color: var(--white); line-height: 1; letter-spacing: 0.04em;
+  }
+  .hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 64px; align-items: start; }
+  .hours-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(29,78,216,0.15); border: 1px solid rgba(29,78,216,0.3);
+    padding: 4px 14px; font-size: 9px; letter-spacing: 0.35em;
+    text-transform: uppercase; color: #93b4f8; margin-bottom: 28px;
+  }
+  .hours-badge::before {
+    content: ''; width: 5px; height: 5px; background: var(--blue);
+    border-radius: 50%; animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+  .hours-table { border-top: 1px solid #e0e0e0; }
+  .hours-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 0; border-bottom: 1px solid #e4e4e4;
+  }
+  .hours-day { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--silver); }
+  .hours-time { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.08em; color: var(--white); }
+
+  .map-frame {
+    background: var(--graphite); height: 400px;
+    position: relative; overflow: hidden; border: 1px solid #cccccc;
+  }
+  .map-frame iframe {
+    width: 100%; height: 100%; border: none;
+    filter: grayscale(100%) contrast(0.9); opacity: 0.7;
+  }
+  .map-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 28px;
+    background: linear-gradient(to top, rgba(248,248,248,0.95) 0%, transparent 100%);
+  }
+  .map-pin {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ash);
+  }
+  .map-pin svg { color: var(--blue); flex-shrink: 0; }
+
+  /* â”€â”€ FOOTER â”€â”€ */
+  footer {
+    background: var(--ink); border-top: 1px solid #e4e4e4; padding: 44px 52px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  footer img { height: 38px; opacity: 0.5; filter: none; }
+  .footer-copy { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: #999999; }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #999999; text-decoration: none; transition: color 0.2s ease;
+  }
+  .footer-links a:hover { color: var(--silver); }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* â”€â”€ RESPONSIVE â”€â”€ */
+  @media (max-width: 860px) {
+    nav { padding: 14px 20px; }
+    .nav-links a:not(.nav-book) { display: none; }
+    .nav-logo img { height: 52px; }
+    .shot-row { grid-template-columns: 1fr; min-height: auto; }
+    .shot-row:nth-child(odd)  .shot-img-wrap,
+    .shot-row:nth-child(even) .shot-img-wrap { order: 1; min-height: 56vw; }
+    .shot-row:nth-child(odd)  .shot-text,
+    .shot-row:nth-child(even) .shot-text     { order: 2; }
+    .shot-text { padding: 32px 24px 40px; }
+    .hours-grid { grid-template-columns: 1fr; gap: 48px; }
+    .info-strip { grid-template-columns: 1fr; }
+    .info-divider { display: none; }
+    .info-block { padding: 36px 28px; }
+    .page { padding: 0 24px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts">
+  </a>
+  <div class="nav-links">
+    <a href="#hours">Hours</a>
+    <a href="#location">Location</a>
+    <a href="https://www.fresha.com" target="_blank" rel="noopener" class="nav-book">Book Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <img class="hero-logo" src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts">
+    <p class="hero-tagline">Precision cuts. Clean finishes.</p>
+    <p class="hero-sub">Hampton Â· Peterborough</p>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="pole-divider"></div>
+
+<!-- SCROLL SHOTS -->
+<section class="shots-section" id="shots">
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/1.jpeg" alt="Textured Fade">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Textured<br>Fade</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">A clean skin fade blended into flowing texture on top. Precision from root to tip.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/2.jpeg" alt="Curly Drop Fade">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Curly<br>Drop Fade</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">Natural curl definition paired with a sharp drop fade. Every coil in its place.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/3.jpeg" alt="Wavy Taper">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Wavy<br>Taper</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">A tapered neckline that lets the natural wave pattern do the talking up top.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/4.jpeg" alt="Afro Fade">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Afro<br>Fade</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">Shape and volume with a sculpted fade line. Celebrating every hair type.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/5.jpeg" alt="Crop & Fade">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Crop<br>&amp; Fade</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">A tight crop with a high fade that keeps it clean, sharp and low-maintenance.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/6.jpeg" alt="Braids & Line-up">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Braids<br>&amp; Line-up</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">Tight braids with a razor-crisp edge line-up. Detail is everything.</p>
+    </div>
+  </div>
+
+  <div class="shot-row">
+    <div class="shot-img-wrap">
+      <img src="EJ%20HAIRCUTS/7.jpeg" alt="Curl Design">
+    </div>
+    <div class="shot-text">
+      <p class="shot-label">The Work</p>
+      <h2 class="shot-title">Curl<br>Design</h2>
+      <div class="shot-rule"></div>
+      <p class="shot-desc">Curls shaped and defined with a carved design in the fade â€” signature EJ style.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- BOOK NOW â€” full area button -->
+<section class="book-section" id="book">
+  <a href="https://www.fresha.com" target="_blank" rel="noopener" class="book-full-btn">
+    <span class="book-btn-text">Book Now</span>
+  </a>
+</section>
+
+<!-- INFO STRIP -->
+<div class="info-strip">
+  <div class="info-block">
+    <span class="info-label">Location</span>
+    <span class="info-value">Peterborough<br>Hampton</span>
+    <p class="info-sub">Peterborough, UK</p>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-block">
+    <span class="info-label">Hours</span>
+    <span class="info-value">9AM â€“ 5PM</span>
+    <p class="info-sub">Open 7 days a week<br>Mon â€“ Sun</p>
+  </div>
+</div>
+
+<!-- HOURS & LOCATION -->
+<section class="hours-section" id="hours">
+  <div class="page">
+    <div class="hours-grid">
+      <div>
+        <p class="s-label">Opening Hours</p>
+        <h2 class="s-title" style="margin-bottom:32px;">When We're<br>Open</h2>
+        <div class="hours-badge">Open 7 Days</div>
+        <div class="hours-table">
+          <div class="hours-row"><span class="hours-day">Monday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Tuesday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Wednesday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Thursday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Friday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+          <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">9:00 â€“ 17:00</span></div>
+        </div>
+      </div>
+      <div id="location">
+        <p class="s-label">Location</p>
+        <h2 class="s-title" style="margin-bottom:32px;">Find Us In<br>Hampton</h2>
+        <div class="map-frame">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9751.2!2d-0.2637!3d52.5451!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4879750a576843d3%3A0x89d44b97d2b0a9b4!2sHampton%2C%20Peterborough!5e0!3m2!1sen!2suk!4v1682000000000"
+            allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="EJ Cuts â€” Hampton, Peterborough">
+          </iframe>
+          <div class="map-overlay">
+            <div class="map-pin">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              Hampton, Peterborough
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts">
+  <span class="footer-copy">Â© 2025 EJ Cuts Â· Peterborough</span>
+  <div class="footer-links">
+    <a href="#shots">Work</a>
+    <a href="#hours">Hours</a>
+    <a href="#book">Book</a>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.shot-row, .book-section').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
+
