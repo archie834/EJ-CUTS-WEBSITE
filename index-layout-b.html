@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>EJ Cuts — Barber · Peterborough</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Outfit:wght@200;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #000000;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    position: relative;
+    text-align: center;
+    padding: 48px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(29,78,216,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-logo {
+    width: 140px;
+    height: auto;
+    margin-bottom: 36px;
+    filter: contrast(999) invert(1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 14vw, 160px);
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    color: #ffffff;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: #888888;
+    margin-top: 18px;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-divider {
+    width: 40px;
+    height: 2px;
+    background: #1d4ed8;
+    margin: 28px auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    padding: 14px 44px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .hero-cta:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(29,78,216,0.35);
+  }
+  .hero-cta:active { transform: translateY(0); }
+  .hero-cta:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
+
+  /* ── SECTION HEADER ── */
+  /* ── Scroll fade ── */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .fade-in-el { animation: fadeIn 0.9s ease forwards; }
+
+  .cuts-header {
+    text-align: center;
+    padding: 96px 24px 64px;
+  }
+
+  .cuts-header-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .cuts-header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    letter-spacing: -0.01em;
+    color: #ffffff;
+  }
+
+  .cuts-header-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: #888888;
+    margin-top: 10px;
+  }
+
+  /* ── CARDS LAYOUT ── */
+  .cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+    padding: 0 24px 120px;
+  }
+
+  .cut-card {
+    width: 100%;
+    max-width: 700px;
+    background: #ffffff;
+    position: relative;
+  }
+
+  .cut-card-img-wrap {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    min-height: 360px;
+  }
+
+  .cut-card-img {
+    width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .cut-card-body {
+    background: #ffffff;
+    padding: 28px 32px 32px;
+    border-top: 3px solid #1d4ed8;
+  }
+
+  .cut-card-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .cut-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 0.01em;
+    color: #000000;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .cut-card-desc {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333333;
+  }
+
+  .cut-card-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #000000;
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 4px 12px;
+    text-transform: uppercase;
+  }
+
+  /* ── BOOK NOW ── */
+  .book-section {
+    background: #000000;
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .book-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 55% 60% at 50% 50%, rgba(29,78,216,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .book-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .book-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 9vw, 112px);
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    line-height: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+
+  .book-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: #888888;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .book-cta {
+    display: inline-block;
+    margin-top: 44px;
+    padding: 16px 60px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .book-cta:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(29,78,216,0.4);
+  }
+  .book-cta:active { transform: translateY(0); }
+  .book-cta:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #000000;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 72px 48px;
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .footer-logo {
+    width: 80px;
+    filter: contrast(999) invert(1);
+    opacity: 0.6;
+  }
+
+  .footer-col h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: #1d4ed8;
+    margin-bottom: 16px;
+  }
+
+  .footer-col p,
+  .footer-col address {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 14px;
+    line-height: 2;
+    color: #888888;
+    font-style: normal;
+  }
+
+  .footer-col a {
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-col a:hover { color: #ffffff; }
+  .footer-col a:focus-visible { outline: 1px solid #1d4ed8; outline-offset: 2px; }
+
+  .footer-bottom {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: 0.12em;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    footer { grid-template-columns: 1fr; }
+    .cut-card-img-wrap { min-height: 240px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts Logo" class="hero-logo">
+  <p class="hero-eyebrow">Hampton · Peterborough</p>
+  <h1 class="hero-title">EJ CUTS</h1>
+  <p class="hero-sub">Sharp cuts, every time.</p>
+  <div class="hero-divider"></div>
+  <a href="https://www.fresha.com" class="hero-cta" target="_blank" rel="noopener">Book Now</a>
+</section>
+
+<!-- CUTS HEADER -->
+<div class="cuts-header">
+  <p class="cuts-header-label">Portfolio</p>
+  <h2 class="cuts-header-title">The Cuts</h2>
+  <p class="cuts-header-sub">Seven signature styles, each one crafted with precision.</p>
+</div>
+
+<!-- CARDS -->
+<div class="cards-container">
+
+  <!-- Card 1 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_13_20%20PM.png" alt="Tapered Mullet" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">01 / 07</p>
+      <h3 class="cut-card-name">Tapered Mullet</h3>
+      <p class="cut-card-desc">Business up front, edge in the back. Clean taper meets modern mullet — structured yet bold. The statement cut for those who don't follow trends, they set them.</p>
+      <span class="cut-card-tag">Signature Style</span>
+    </div>
+  </article>
+
+  <!-- Card 2 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/IMG_7395.jpeg" alt="Curly Taper" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">02 / 07</p>
+      <h3 class="cut-card-name">Curly Taper</h3>
+      <p class="cut-card-desc">Volume on top, precision on the sides. Your natural curl texture elevated and defined. Works with your hair, not against it.</p>
+      <span class="cut-card-tag">Curl Specialist</span>
+    </div>
+  </article>
+
+  <!-- Card 3 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_12_09%20PM.png" alt="Wavy Taper" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">03 / 07</p>
+      <h3 class="cut-card-name">Wavy Taper</h3>
+      <p class="cut-card-desc">Soft waves sculpted with intent. The perfect balance of relaxed movement and sharp clean lines. Effortlessly cool every day of the week.</p>
+      <span class="cut-card-tag">Wave Control</span>
+    </div>
+  </article>
+
+  <!-- Card 4 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_01_35%20PM.png" alt="Taper & Line Up" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">04 / 07</p>
+      <h3 class="cut-card-name">Taper &amp; Line Up</h3>
+      <p class="cut-card-desc">Razor-sharp edges frame the face with precision. Clean line up with a seamless taper fade — professional ready and sharp in any setting.</p>
+      <span class="cut-card-tag">Clean &amp; Sharp</span>
+    </div>
+  </article>
+
+  <!-- Card 5 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/IMG_7396.jpeg" alt="Drop Fade Mullet" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">05 / 07</p>
+      <h3 class="cut-card-name">Drop Fade Mullet</h3>
+      <p class="cut-card-desc">The drop fade curves behind the ear for a flowing silhouette. Bold mullet flow paired with technical precision — where shape and style collide.</p>
+      <span class="cut-card-tag">Technical Cut</span>
+    </div>
+  </article>
+
+  <!-- Card 6 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/IMG_7394.jpeg" alt="Braids & Line-up" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">06 / 07</p>
+      <h3 class="cut-card-name">Braids &amp; Line-up</h3>
+      <p class="cut-card-desc">Intricate braids paired with a crisp, fresh line up. Where artistry meets edge work. Each braid placed with purpose, each line laid with care.</p>
+      <span class="cut-card-tag">Artistry Cut</span>
+    </div>
+  </article>
+
+  <!-- Card 7 -->
+  <article class="cut-card">
+    <div class="cut-card-img-wrap">
+      <img src="EJ%20HAIRCUTS/7.jpeg" alt="Taper with a Design" class="cut-card-img">
+    </div>
+    <div class="cut-card-body">
+      <p class="cut-card-number">07 / 07</p>
+      <h3 class="cut-card-name">Taper with a Design</h3>
+      <p class="cut-card-desc">Your cut, your statement. Custom designs razored in with surgical accuracy. Wear your identity on your head — bold, unique, unforgettable.</p>
+      <span class="cut-card-tag">Custom Design</span>
+    </div>
+  </article>
+
+</div>
+
+<!-- BOOK NOW -->
+<section class="book-section">
+  <p class="book-eyebrow">Ready?</p>
+  <h2 class="book-heading">Book Your<br>Session</h2>
+  <p class="book-sub">Reserve your chair online. Fast, easy, no fuss.</p>
+  <a href="https://www.fresha.com" class="book-cta" target="_blank" rel="noopener">Book Now on Fresha</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-col">
+    <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts" class="footer-logo">
+  </div>
+  <div class="footer-col">
+    <h4>Opening Hours</h4>
+    <address>
+      Mon – Fri &nbsp;&nbsp;16:00 – 19:00<br>
+      Sat – Sun &nbsp;&nbsp;12:00 – 19:00
+    </address>
+  </div>
+  <div class="footer-col">
+    <h4>Find Us</h4>
+    <address>
+      Hampton, Peterborough<br>
+      <a href="https://www.fresha.com" target="_blank" rel="noopener">Book via Fresha →</a>
+    </address>
+  </div>
+  <div class="footer-bottom">
+    © 2026 EJ Cuts &nbsp;·&nbsp; Hampton, Peterborough
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('fade-in-el');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.cut-card, .cuts-header, footer').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

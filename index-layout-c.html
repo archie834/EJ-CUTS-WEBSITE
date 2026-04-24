@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>EJ Cuts — Barber · Peterborough</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Outfit:wght@200;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #000000;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    position: relative;
+    text-align: center;
+    padding: 48px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(29,78,216,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 32px;
+    filter: contrast(999) invert(1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(68px, 13vw, 150px);
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    color: #ffffff;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2.5vw, 24px);
+    color: #888888;
+    margin-top: 16px;
+    letter-spacing: 0.06em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 14px 44px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .hero-cta:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(29,78,216,0.35);
+  }
+  .hero-cta:active { transform: translateY(0); }
+  .hero-cta:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
+
+  /* ── CUTS SECTION WRAPPER ── */
+  .cuts-section {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── LEFT STICKY PANEL ── */
+  .sticky-panel {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 48px 60px 56px;
+    background: #000000;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    z-index: 10;
+  }
+
+  .panel-logo {
+    position: absolute;
+    top: 40px;
+    left: 56px;
+    width: 48px;
+    filter: contrast(999) invert(1);
+    opacity: 0.35;
+  }
+
+  .panel-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .panel-eyebrow.ready { opacity: 1; }
+
+  .panel-cut-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    line-height: 1;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -0.04em;
+    user-select: none;
+    margin-bottom: -20px;
+    transition: opacity 0.5s ease;
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 4vw, 60px);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: #ffffff;
+    transition: opacity 0.4s ease;
+    margin-bottom: 16px;
+  }
+
+  .panel-divider {
+    width: 36px;
+    height: 2px;
+    background: #1d4ed8;
+    margin-bottom: 20px;
+    transition: width 0.5s ease;
+  }
+
+  .panel-desc {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.6);
+    max-width: 320px;
+    transition: opacity 0.4s ease;
+  }
+
+  .panel-cta {
+    display: inline-block;
+    margin-top: 36px;
+    padding: 12px 32px;
+    background: transparent;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    width: fit-content;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .panel-cta:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    transform: translateY(-1px);
+  }
+  .panel-cta:active { transform: translateY(0); }
+  .panel-cta:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 4px; }
+
+  .panel-progress {
+    position: absolute;
+    left: 56px;
+    bottom: 48px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .progress-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: default;
+  }
+
+  .progress-dot.active {
+    background: #1d4ed8;
+    transform: scale(1.4);
+  }
+
+  /* ── RIGHT SCROLL COLUMN ── */
+  .scroll-col {
+    background: #000000;
+    padding: 0;
+  }
+
+  /* ── Scroll fade ── */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .fade-in-el { animation: fadeIn 0.9s ease forwards; }
+
+  .cut-item {
+    width: 100%;
+    padding: 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    min-height: 100vh;
+  }
+
+  .cut-item:first-child { padding-top: 0; min-height: 80vh; }
+  .cut-item:last-child { padding-bottom: 80px; }
+
+  .cut-item img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ── PANEL TRANSITION STATES ── */
+  .sticky-panel.transitioning .panel-title,
+  .sticky-panel.transitioning .panel-desc {
+    opacity: 0;
+  }
+
+  /* ── BOOK SECTION ── */
+  .book-section {
+    background: #000000;
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .book-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 55% 60% at 50% 50%, rgba(29,78,216,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .book-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(50px, 9vw, 110px);
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    line-height: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+
+  .book-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: #888888;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .book-cta {
+    display: inline-block;
+    margin-top: 44px;
+    padding: 16px 60px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .book-cta:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(29,78,216,0.4);
+  }
+  .book-cta:active { transform: translateY(0); }
+  .book-cta:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #000000;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 64px 56px;
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .footer-logo {
+    width: 80px;
+    filter: contrast(999) invert(1);
+    opacity: 0.6;
+  }
+
+  .footer-col h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    color: #1d4ed8;
+    margin-bottom: 16px;
+  }
+
+  .footer-col p,
+  .footer-col address {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 14px;
+    line-height: 2;
+    color: #888888;
+    font-style: normal;
+  }
+
+  .footer-col a {
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-col a:hover { color: #ffffff; }
+  .footer-col a:focus-visible { outline: 1px solid #1d4ed8; outline-offset: 2px; }
+
+  .footer-bottom {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: 0.12em;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE: collapse sticky layout on mobile ── */
+  @media (max-width: 900px) {
+    .cuts-section {
+      grid-template-columns: 1fr;
+    }
+
+    .sticky-panel {
+      position: relative;
+      height: auto;
+      padding: 60px 24px 40px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .scroll-col { padding: 0; }
+    .cut-item { min-height: auto; padding: 24px 0; }
+    footer { grid-template-columns: 1fr; padding: 48px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts Logo" class="hero-logo">
+  <h1 class="hero-title">EJ CUTS</h1>
+  <p class="hero-sub">Precision. Craft. Character.</p>
+  <a href="https://www.fresha.com" class="hero-cta" target="_blank" rel="noopener">Book Now</a>
+</section>
+
+<!-- CUTS SECTION: sticky left + scroll right -->
+<div class="cuts-section">
+
+  <!-- LEFT: Sticky Info Panel -->
+  <div class="sticky-panel" id="stickyPanel">
+    <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts" class="panel-logo">
+    <p class="panel-eyebrow ready" id="panelEyebrow">The Cuts</p>
+    <div class="panel-cut-num" id="panelNum">01</div>
+    <h2 class="panel-title" id="panelTitle">Tapered Mullet</h2>
+    <div class="panel-divider" id="panelDivider"></div>
+    <p class="panel-desc" id="panelDesc">Business up front, edge in the back. Clean taper meets modern mullet — structured yet bold.</p>
+    <a href="https://www.fresha.com" class="panel-cta" target="_blank" rel="noopener">Book This Style</a>
+    <div class="panel-progress" id="panelProgress">
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Scrolling Photos -->
+  <div class="scroll-col" id="scrollCol">
+
+    <div class="cut-item"
+      data-index="1"
+      data-title="Tapered Mullet"
+      data-desc="Business up front, edge in the back. Clean taper meets modern mullet — structured yet bold.">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_13_20%20PM.png" alt="Tapered Mullet">
+    </div>
+
+    <div class="cut-item"
+      data-index="2"
+      data-title="Curly Taper"
+      data-desc="Volume on top, precision on the sides. Your natural curl texture elevated and defined.">
+      <img src="EJ%20HAIRCUTS/IMG_7395.jpeg" alt="Curly Taper">
+    </div>
+
+    <div class="cut-item"
+      data-index="3"
+      data-title="Wavy Taper"
+      data-desc="Soft waves sculpted with intent. The perfect balance of relaxed movement and sharp lines.">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_12_09%20PM.png" alt="Wavy Taper">
+    </div>
+
+    <div class="cut-item"
+      data-index="4"
+      data-title="Taper &amp; Line Up"
+      data-desc="Razor-sharp edges frame the face. Clean line up with a seamless taper — professional ready.">
+      <img src="EJ%20HAIRCUTS/ChatGPT%20Image%20Apr%2023%2C%202026%2C%2004_01_35%20PM.png" alt="Taper & Line Up">
+    </div>
+
+    <div class="cut-item"
+      data-index="5"
+      data-title="Drop Fade Mullet"
+      data-desc="The drop fade curves behind the ear for a flowing silhouette. Bold mullet flow meets technical precision.">
+      <img src="EJ%20HAIRCUTS/IMG_7396.jpeg" alt="Drop Fade Mullet">
+    </div>
+
+    <div class="cut-item"
+      data-index="6"
+      data-title="Braids &amp; Line-up"
+      data-desc="Intricate braids paired with a crisp line up. Where artistry meets edge work.">
+      <img src="EJ%20HAIRCUTS/IMG_7394.jpeg" alt="Braids & Line-up">
+    </div>
+
+    <div class="cut-item"
+      data-index="7"
+      data-title="Taper with a Design"
+      data-desc="Your cut, your statement. Custom designs razored in with surgical accuracy — wear your identity.">
+      <img src="EJ%20HAIRCUTS/7.jpeg" alt="Taper with a Design">
+    </div>
+
+  </div>
+</div>
+
+<!-- BOOK NOW -->
+<section class="book-section">
+  <h2 class="book-heading">Let's Get<br>You In</h2>
+  <p class="book-sub">Book your session online. Quick, easy, yours.</p>
+  <a href="https://www.fresha.com" class="book-cta" target="_blank" rel="noopener">Book Now</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-col">
+    <img src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts" class="footer-logo">
+  </div>
+  <div class="footer-col">
+    <h4>Hours</h4>
+    <address>
+      Mon – Fri &nbsp;&nbsp;16:00 – 19:00<br>
+      Sat – Sun &nbsp;&nbsp;12:00 – 19:00
+    </address>
+  </div>
+  <div class="footer-col">
+    <h4>Location</h4>
+    <address>
+      Hampton, Peterborough<br>
+      <a href="https://www.fresha.com" target="_blank" rel="noopener">Book via Fresha →</a>
+    </address>
+  </div>
+  <div class="footer-bottom">
+    © 2026 EJ Cuts &nbsp;·&nbsp; Hampton, Peterborough
+  </div>
+</footer>
+
+<script>
+  const panelTitle   = document.getElementById('panelTitle');
+  const panelDesc    = document.getElementById('panelDesc');
+  const panelNum     = document.getElementById('panelNum');
+  const panel        = document.getElementById('stickyPanel');
+  const dots         = document.querySelectorAll('.progress-dot');
+  const cutItems     = document.querySelectorAll('.cut-item');
+
+  let activeIndex = 0;
+
+  function updatePanel(index, title, desc, animate) {
+    if (activeIndex === index && !animate) return;
+    activeIndex = index;
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+    if (animate) {
+      panelTitle.style.opacity = '0';
+      panelDesc.style.opacity  = '0';
+      panelNum.style.opacity   = '0';
+      setTimeout(() => {
+        panelTitle.textContent = title;
+        panelDesc.innerHTML    = desc;
+        panelNum.textContent   = String(index + 1).padStart(2, '0');
+        panelTitle.style.opacity = '1';
+        panelDesc.style.opacity  = '1';
+        panelNum.style.opacity   = '1';
+      }, 220);
+    } else {
+      panelTitle.textContent = title;
+      panelDesc.innerHTML    = desc;
+      panelNum.textContent   = String(index + 1).padStart(2, '0');
+    }
+  }
+
+  // Initialise panel to first item immediately (no animation)
+  if (cutItems.length > 0) {
+    updatePanel(0, cutItems[0].dataset.title, cutItems[0].dataset.desc, false);
+  }
+
+  panelTitle.style.transition = 'opacity 0.4s ease';
+  panelDesc.style.transition  = 'opacity 0.4s ease';
+  panelNum.style.transition   = 'opacity 0.4s ease';
+
+  // Fade-in observer for cut items (cosmetic only — elements are visible by default)
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('fade-in-el');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  cutItems.forEach(el => fadeObserver.observe(el));
+
+  // Panel update observer
+  const panelObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el     = entry.target;
+        const rawIdx = parseInt(el.dataset.index, 10) - 1;
+        updatePanel(rawIdx, el.dataset.title, el.dataset.desc, true);
+      }
+    });
+  }, { threshold: 0.5, rootMargin: '-10% 0px -10% 0px' });
+
+  cutItems.forEach(el => panelObserver.observe(el));
+</script>
+</body>
+</html>
