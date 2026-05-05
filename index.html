@@ -328,36 +328,93 @@
 
   .cut-caption { display: none; }
 
+  /* ── BOOKING MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #0d0d0d; border: 1px solid #222;
+    width: 100%; max-width: 460px;
+    padding: 40px 32px 36px;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none; cursor: pointer;
+    color: #555; font-size: 22px; line-height: 1;
+    transition: color 0.2s ease;
+  }
+  .modal-close:hover { color: #fff; }
+  .modal-eyebrow {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.45em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 10px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 0.03em; color: #fff;
+    line-height: 1; margin-bottom: 28px;
+  }
+  .modal-field { margin-bottom: 18px; }
+  .modal-label {
+    display: block; font-size: 9px; font-weight: 500;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: #555; margin-bottom: 8px;
+  }
+  .modal-input, .modal-select {
+    width: 100%; background: #111; border: 1px solid #222;
+    color: #fff; font-family: 'Outfit', sans-serif;
+    font-size: 14px; font-weight: 200; padding: 12px 14px;
+    appearance: none; transition: border-color 0.2s ease;
+  }
+  .modal-input:focus, .modal-select:focus {
+    outline: none; border-color: var(--blue);
+  }
+  .modal-input::placeholder { color: #333; }
+  .modal-select option { background: #111; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-submit {
+    width: 100%; margin-top: 10px;
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 16px 24px;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .modal-submit:hover { background: var(--blue-hi); transform: translateY(-1px); }
+  .modal-submit:active { transform: scale(0.98); }
+  .modal-note {
+    margin-top: 14px; font-size: 10px; color: #333;
+    text-align: center; letter-spacing: 0.1em;
+  }
+
   /* ── FLOATING BOOK BAR ── */
   .float-bar {
-    display: none;
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 300;
+    align-items: center; justify-content: center;
+    background: var(--blue);
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 18px 24px;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 32px rgba(29,78,216,0.4);
+    transition: background 0.2s ease;
   }
-  @media (max-width: 900px) {
-    .float-bar {
-      display: flex;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 300;
-      align-items: center; justify-content: center;
-      background: var(--blue);
-      color: var(--white);
-      text-decoration: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px; letter-spacing: 0.25em;
-      text-transform: uppercase;
-      padding: 18px 24px;
-      padding-bottom: calc(18px + env(safe-area-inset-bottom));
-      box-shadow: 0 -4px 32px rgba(29,78,216,0.4);
-      transition: background 0.2s ease;
-    }
-    .float-bar:hover { background: var(--blue-hi); }
-    .float-bar:active { background: #1a3fbb; }
-    footer { padding-bottom: calc(36px + 60px + env(safe-area-inset-bottom)); }
-  }
+  .float-bar:hover { background: var(--blue-hi); }
+  .float-bar:active { background: #1a3fbb; }
+  footer { padding-bottom: calc(36px + 60px + env(safe-area-inset-bottom)); }
 
   /* ── HERO CTA ── */
   .hero-cta {
-    display: none;
+    display: inline-block;
     margin-top: 32px;
     background: var(--blue);
     color: var(--white);
@@ -382,7 +439,6 @@
     .nav-logo img { height: 52px; }
     .hero-logo { width: min(210px, 54vw); }
     .hero-tagline { font-size: clamp(28px, 7.5vw, 40px); }
-    .hero-cta { display: inline-block; }
     .nav-book { padding: 9px 18px !important; font-size: 10px !important; }
 
     /* Keep two-column layout — scale proportions for phone */
@@ -434,8 +490,68 @@
 </head>
 <body>
 
-<!-- FLOATING BOOK BAR (mobile only) -->
-<a href="https://www.barbr.me/ejcutz" target="_blank" rel="noopener" class="float-bar">Book Now</a>
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">&#215;</button>
+    <p class="modal-eyebrow">EJ Cuts</p>
+    <h2 class="modal-title">Book Your Cut</h2>
+    <form id="bookingForm">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-label" for="b-name">Your Name</label>
+          <input class="modal-input" id="b-name" type="text" placeholder="John Smith" required>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="b-phone">Your Number</label>
+          <input class="modal-input" id="b-phone" type="tel" placeholder="07700 000000" required>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-label" for="b-day">Preferred Day</label>
+          <select class="modal-select" id="b-day" required>
+            <option value="" disabled selected>Select day</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="b-time">Preferred Time</label>
+          <select class="modal-select" id="b-time" required>
+            <option value="" disabled selected>Select time</option>
+            <optgroup label="Mon–Fri">
+              <option>4:00 PM</option><option>4:30 PM</option><option>5:00 PM</option>
+              <option>5:30 PM</option><option>6:00 PM</option><option>6:30 PM</option>
+            </optgroup>
+            <optgroup label="Sat–Sun">
+              <option>12:00 PM</option><option>12:30 PM</option><option>1:00 PM</option>
+              <option>1:30 PM</option><option>2:00 PM</option><option>2:30 PM</option>
+              <option>3:00 PM</option><option>3:30 PM</option><option>4:00 PM</option>
+              <option>4:30 PM</option><option>5:00 PM</option><option>5:30 PM</option>
+              <option>6:00 PM</option><option>6:30 PM</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="b-service">Service</label>
+        <select class="modal-select" id="b-service" required>
+          <option value="" disabled selected>Select a cut</option>
+          <option>Tapered Mullet</option><option>Curly Taper</option>
+          <option>Wavy Taper</option><option>Taper &amp; Line Up</option>
+          <option>Drop Fade Mullet</option><option>Braids &amp; Line-up</option>
+          <option>Taper with a Design</option><option>Other / Not sure</option>
+        </select>
+      </div>
+      <button type="submit" class="modal-submit">Send Booking Request</button>
+    </form>
+    <p class="modal-note">We'll confirm your appointment via text.</p>
+  </div>
+</div>
+
+<!-- FLOATING BOOK BAR -->
+<a href="#" class="float-bar" id="openBook">Book Now</a>
 
 <!-- NAV -->
 <nav id="nav">
@@ -445,7 +561,7 @@
   <div class="nav-links">
     <a href="#hours">Hours</a>
     <a href="#location">Location</a>
-    <a href="https://www.barbr.me/ejcutz" target="_blank" rel="noopener" class="nav-book">Book Now</a>
+    <a href="#" class="nav-book" id="openBook2">Book Now</a>
   </div>
 </nav>
 
@@ -455,7 +571,6 @@
     <img class="hero-logo" src="EJ%20CUTS%20LOGO.png" alt="EJ Cuts" style="filter:contrast(999) invert(1);">
     <p class="hero-tagline">Precision cuts. Clean finishes.</p>
     <p class="hero-sub">Hampton · Peterborough</p>
-    <a href="https://www.barbr.me/ejcutz" target="_blank" rel="noopener" class="hero-cta">Book Now</a>
   </div>
   <div class="hero-scroll-hint">
     <span>Scroll</span>
@@ -577,7 +692,7 @@
 
 <!-- BOOK NOW (original full-width button) -->
 <section class="book-section" id="book">
-  <a href="https://www.barbr.me/ejcutz" target="_blank" rel="noopener" class="book-full-btn">
+  <a href="#" class="book-full-btn" id="openBook3">
     <span class="book-btn-text">Book Now</span>
   </a>
 </section>
@@ -652,6 +767,32 @@
 </footer>
 
 <script>
+  /* Booking modal */
+  const modal = document.getElementById('bookingModal');
+  const closeBtn = document.getElementById('modalClose');
+  function openModal(e) { e.preventDefault(); modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+  ['openBook','openBook2','openBook3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', openModal);
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const n = document.getElementById('b-name').value;
+    const p = document.getElementById('b-phone').value;
+    const d = document.getElementById('b-day').value;
+    const t = document.getElementById('b-time').value;
+    const s = document.getElementById('b-service').value;
+    const body = `New booking request:\nName: ${n}\nNumber: ${p}\nDay: ${d}\nTime: ${t}\nService: ${s}`;
+    const num = ['+44', '7707', '497581'].join('');
+    window.location.href = 'sms:' + num + '?body=' + encodeURIComponent(body);
+    closeModal();
+  });
+
   /* Nav scroll */
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
