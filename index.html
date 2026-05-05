@@ -780,17 +780,41 @@
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  document.getElementById('bookingForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const n = document.getElementById('b-name').value;
-    const p = document.getElementById('b-phone').value;
-    const d = document.getElementById('b-day').value;
-    const t = document.getElementById('b-time').value;
-    const s = document.getElementById('b-service').value;
-    const body = `New booking request:\nName: ${n}\nNumber: ${p}\nDay: ${d}\nTime: ${t}\nService: ${s}`;
-    const num = ['+44', '7707', '497581'].join('');
-    window.location.href = 'sms:' + num + '?body=' + encodeURIComponent(body);
-    closeModal();
+    const btn = this.querySelector('.modal-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const data = {
+      name:    document.getElementById('b-name').value,
+      phone:   document.getElementById('b-phone').value,
+      day:     document.getElementById('b-day').value,
+      time:    document.getElementById('b-time').value,
+      service: document.getElementById('b-service').value
+    };
+
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        btn.textContent = 'Request Sent!';
+        btn.style.background = '#16a34a';
+        setTimeout(() => { closeModal(); btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; this.reset(); }, 2000);
+      } else {
+        btn.textContent = 'Failed — Try Again';
+        btn.style.background = '#dc2626';
+        setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; }, 2500);
+      }
+    } catch {
+      btn.textContent = 'Failed — Try Again';
+      btn.style.background = '#dc2626';
+      setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; }, 2500);
+    }
   });
 
   /* Nav scroll */
