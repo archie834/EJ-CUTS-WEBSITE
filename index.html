@@ -801,19 +801,22 @@
         body: JSON.stringify(data)
       });
 
+      const data = await res.json();
       if (res.ok) {
         btn.textContent = 'Request Sent!';
         btn.style.background = '#16a34a';
         setTimeout(() => { closeModal(); btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; this.reset(); }, 2000);
       } else {
-        btn.textContent = 'Failed — Try Again';
+        btn.textContent = 'Failed: ' + (data.error || 'Try Again');
         btn.style.background = '#dc2626';
-        setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; }, 2500);
+        btn.style.fontSize = '12px';
+        setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.style.fontSize = ''; btn.disabled = false; }, 4000);
       }
-    } catch {
-      btn.textContent = 'Failed — Try Again';
+    } catch (err) {
+      btn.textContent = 'Failed: ' + err.message;
       btn.style.background = '#dc2626';
-      setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; }, 2500);
+      btn.style.fontSize = '12px';
+      setTimeout(() => { btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.style.fontSize = ''; btn.disabled = false; }, 4000);
     }
   });
 
