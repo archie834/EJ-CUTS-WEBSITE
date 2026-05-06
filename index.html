@@ -497,20 +497,23 @@
     <p class="modal-eyebrow">EJ Cuts</p>
     <h2 class="modal-title">Book Your Cut</h2>
     <form id="bookingForm">
+      <input type="hidden" name="access_key" value="849afa75-6ff5-44d5-b5b3-ead4a6d38b1f">
+      <input type="hidden" name="subject" value="New Booking Request — EJ Cuts">
+      <input type="hidden" name="from_name" value="EJ Cuts Website">
       <div class="modal-row">
         <div class="modal-field">
           <label class="modal-label" for="b-name">Your Name</label>
-          <input class="modal-input" id="b-name" type="text" placeholder="John Smith" required>
+          <input class="modal-input" id="b-name" name="name" type="text" placeholder="John Smith" required>
         </div>
         <div class="modal-field">
           <label class="modal-label" for="b-phone">Your Number</label>
-          <input class="modal-input" id="b-phone" type="tel" placeholder="07700 000000" required>
+          <input class="modal-input" id="b-phone" name="phone" type="tel" placeholder="07700 000000" required>
         </div>
       </div>
       <div class="modal-row">
         <div class="modal-field">
           <label class="modal-label" for="b-day">Preferred Day</label>
-          <select class="modal-select" id="b-day" required>
+          <select class="modal-select" id="b-day" name="preferred_day" required>
             <option value="" disabled selected>Select day</option>
             <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
             <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
@@ -518,7 +521,7 @@
         </div>
         <div class="modal-field">
           <label class="modal-label" for="b-time">Preferred Time</label>
-          <select class="modal-select" id="b-time" required>
+          <select class="modal-select" id="b-time" name="preferred_time" required>
             <option value="" disabled selected>Select time</option>
             <optgroup label="Mon–Fri">
               <option>4:00 PM</option><option>4:30 PM</option><option>5:00 PM</option>
@@ -536,7 +539,7 @@
       </div>
       <div class="modal-field">
         <label class="modal-label" for="b-service">Service</label>
-        <select class="modal-select" id="b-service" required>
+        <select class="modal-select" id="b-service" name="service" required>
           <option value="" disabled selected>Select a cut</option>
           <option>Tapered Mullet</option><option>Curly Taper</option>
           <option>Wavy Taper</option><option>Taper &amp; Line Up</option>
@@ -786,25 +789,18 @@
     btn.textContent = 'Sending...';
     btn.disabled = true;
 
-    const data = {
-      name:    document.getElementById('b-name').value,
-      phone:   document.getElementById('b-phone').value,
-      day:     document.getElementById('b-day').value,
-      time:    document.getElementById('b-time').value,
-      service: document.getElementById('b-service').value
-    };
+    const formData = new FormData(this);
 
     try {
-      const res = await fetch('/api/book', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: formData
       });
 
       if (res.ok) {
         btn.textContent = 'Request Sent!';
         btn.style.background = '#16a34a';
-        setTimeout(() => { closeModal(); btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; this.reset(); }, 2000);
+        setTimeout(() => { closeModal(); btn.textContent = 'Send Booking Request'; btn.style.background = ''; btn.disabled = false; document.getElementById('bookingForm').reset(); }, 2000);
       } else {
         let errMsg = 'Try Again';
         try { const r = await res.json(); errMsg = r.error || errMsg; } catch {}
